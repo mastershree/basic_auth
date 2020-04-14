@@ -31,10 +31,19 @@ class Login extends Component {
     },
   };
 
+  usrRef = React.createRef();
+  pwdRef = React.createRef();
+
   onInputChange = (event) => {
     const { name, value } = event.target;
 
-    let isError = { ...this.state.isError };
+    let isError = {
+      ...this.state.isError,
+    };
+
+    //console.log(isError);
+
+    isError.form = "";
 
     switch (name) {
       case "username":
@@ -53,20 +62,23 @@ class Login extends Component {
   onSubmit = (event) => {
     event.preventDefault();
 
+    console.log("Submit Clicked!!!");
+
     const { username, password } = this.state;
 
     let isError = { ...this.state.isError };
 
-    if (username.length === 0) {
+    isError.form = "";
+
+    if (username.length === 0 && password === "") {
       isError.username = "Kindly enter the username";
-    }
-
-    if (password.length === 0) {
       isError.password = "Kindly enter the password.";
-    }
-
-    if (
-      isError.form === "" &&
+    } else if (username.length === 0) {
+      isError.username = "Kindly enter the username";
+    } else if (password === "") {
+      isError.password = "Kindly enter the password.";
+    } else if (
+      // isError.form === "" &&
       username === this.props.username &&
       password === this.props.password
     ) {
@@ -74,9 +86,24 @@ class Login extends Component {
 
       //this.props.history.push("/home");
     } else {
-      isError.form = "User does not exist!!!";
-    }
+      if (isError.username === "" && username !== this.props.username) {
+        isError.form = "User does'nt exist!!!";
+        this.setState({ isError });
+        this.usrRef.current.value = "";
+        this.pwdRef.current.value = "";
+        this.usrRef.current.focus();
 
+        return;
+      }
+      if (isError.password === "" && password !== this.props.password) {
+        isError.form = "Password incorrect. Try Again!!!";
+        this.pwdRef.current.value = "";
+        this.pwdRef.current.focus();
+      }
+
+      //console.log(this.ref.current.value);
+    }
+    console.log(isError.form);
     this.setState({ isError });
   };
 
@@ -104,8 +131,10 @@ class Login extends Component {
                     type="text"
                     name="username"
                     id="username"
+                    ref={this.usrRef}
                     placeholder="Username"
                     onChange={this.onInputChange}
+                    autoFocus
                   />
                   {isError.username.length > 0 && (
                     <div className="invalid-feedback">{isError.username}</div>
@@ -124,6 +153,7 @@ class Login extends Component {
                         : "form-control"
                     }
                     type="text"
+                    ref={this.pwdRef}
                     name="password"
                     placeholder="Password"
                     onChange={this.onInputChange}

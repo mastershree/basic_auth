@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { UPDATE } from "./reducers";
 import { Link } from "react-router-dom";
+import Logout from "./Logout";
 
 const regExp = RegExp(/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/);
 
@@ -123,6 +124,7 @@ class Edit extends Component {
 
     return (
       <>
+        <Logout />
         <div className="jumbotron">
           <h3 className="title">Edit Form</h3>
           <form onSubmit={this.onSubmitHandler}>
